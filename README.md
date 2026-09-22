@@ -1,37 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bawadi Karbala
 
-## Getting Started
+Website for Bawadi Karbala for Agricultural and Animal Production (شركة بوادي كربلاء للإنتاج الزراعي والحيواني), an Etihad Group poultry company in Karbala. Sister site of [Sama Karbala](https://github.com/Dweirii/samakarbala).
 
-First, run the development server:
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, pnpm.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev     # http://localhost:3000
+pnpm lint
+pnpm build && pnpm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `app/[lang]/…`: pages, statically generated for `ar` (default, RTL) and `en`.
+- `lib/dictionary.ts`: all copy and UI strings in both languages, plus contact details.
+- `lib/i18n.ts`: locales and path helpers.
+- `proxy.ts`: sends `/` to `/ar` (or `/en` when the browser prefers English). Unknown top-level URLs, such as spam from the old WordPress site, render the Arabic 404 in place and are never redirected.
+- `next.config.ts`: redirects from the old WordPress URLs (`/why-us`, `/landing`, `/new-pages-ii`, `/contact`, `/faq` and their `/en/…` versions).
+- `app/globals.css`: design tokens (`paper`, `shell`, `line`, `ink`, `ink-soft`, `brand`, `brand-deep`, `sun`), taken from the logo.
+- `public/brand`, `public/media`: logo and photos from the old site.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# BawadiKarbala
+There is no News section. The old news page contained only placeholder cards with no articles. To add it back, follow the `lib/posts.ts` pattern in the Sama Karbala repo.

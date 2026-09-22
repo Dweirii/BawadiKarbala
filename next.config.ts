@@ -11,15 +11,22 @@ const legacyPages: Record<string, string> = {
 };
 
 const nextConfig: NextConfig = {
+  // Trailing slashes are handled in proxy.ts, so old spam URLs (which all end in "/") are never redirected.
+  skipTrailingSlashRedirect: true,
   images: {
     qualities: [75, 90],
     formats: ["image/avif", "image/webp"],
   },
   async redirects() {
-    return Object.entries(legacyPages).flatMap(([slug, path]) => [
-      { source: `/${slug}`, destination: `/ar${path}`, permanent: true },
-      ...(slug === "contact" ? [] : [{ source: `/en/${slug}`, destination: `/en${path}`, permanent: true }]),
-    ]);
+    return Object.entries(legacyPages).flatMap(([slug, path]) =>
+      ["", "/"].flatMap((slash) => [
+        { source: `/${slug}${slash}`, destination: `/ar${path}`, permanent: true },
+        // /en/contact is also a new URL, so only its trailing-slash form needs a redirect.
+        ...(slug === "contact" && !slash
+          ? []
+          : [{ source: `/en/${slug}${slash}`, destination: `/en${path}`, permanent: true }]),
+      ]),
+    );
   },
 };
 

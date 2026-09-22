@@ -1,8 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, locales, type Locale } from "@/lib/i18n";
 
-// Top-level paths that are real pages here, so /about on its own still finds /ar/about.
+// Paths that are real pages here (under a locale, or at the top level as a shortcut).
 const pages = new Set(["about", "products", "careers", "contact"]);
+
+const isLocale = (segment?: string): segment is Locale =>
+  segment !== undefined && (locales as readonly string[]).includes(segment);
 
 /** Arabic unless the browser ranks English above Arabic. */
 function preferredLocale(request: NextRequest): Locale {
@@ -17,21 +20,34 @@ function preferredLocale(request: NextRequest): Locale {
   return match?.tag.startsWith("en") ? "en" : defaultLocale;
 }
 
+// Built from scratch: NextURL keeps the original trailing slash when its pathname is reassigned.
+const to = (request: NextRequest, pathname: string) => new URL(pathname + request.nextUrl.search, request.url);
+
+/** Serve the localized 404 page at the requested URL, with a real 404 status. */
+const missing = (request: NextRequest, lang: Locale) =>
+  NextResponse.rewrite(to(request, `/${lang}/missing`), { status: 404 });
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const [first] = pathname.split("/").filter(Boolean);
+  const segments = pathname.split("/").filter(Boolean);
+  const [first, second] = segments;
+  const trimmed = `/${segments.join("/")}`;
+  const isPage = segments.length <= 1 || (segments.length === 2 && pages.has(second));
 
-  if (first && (locales as readonly string[]).includes(first)) return;
+  if (isLocale(first)) {
+    if (!isPage) return missing(request, first);
+    // Real pages get the trailing slash tidied up.
+    if (pathname !== trimmed) return NextResponse.redirect(to(request, trimmed), 308);
+    return;
+  }
 
-  if (!first || pages.has(first)) {
-    request.nextUrl.pathname = `/${preferredLocale(request)}${pathname === "/" ? "" : pathname}`;
-    return NextResponse.redirect(request.nextUrl);
+  if (!first || (segments.length === 1 && pages.has(first))) {
+    return NextResponse.redirect(to(request, `/${preferredLocale(request)}${first ? trimmed : ""}`));
   }
 
   // Everything else (injected spam posts, old theme demo pages, wp-json…) is not ours.
-  // Render the Arabic 404 in place instead of redirecting it anywhere.
-  request.nextUrl.pathname = `/${defaultLocale}${pathname}`;
-  return NextResponse.rewrite(request.nextUrl);
+  // It gets the Arabic 404 in place and is never redirected anywhere.
+  return missing(request, defaultLocale);
 }
 
 export const config = {

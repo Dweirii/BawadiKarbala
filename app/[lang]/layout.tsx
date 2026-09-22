@@ -14,6 +14,9 @@ const readex = Readex_Pro({
   display: "swap",
 });
 
+// Only /ar and /en exist; proxy.ts routes everything else to the localized 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }

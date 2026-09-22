@@ -73,7 +73,7 @@ export default async function Products({ params }: PageProps<"/[lang]/products">
           <Image src="/media/hatching-eggs.jpg" alt="" fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
         </div>
         <div className="relative aspect-[730/420] overflow-hidden rounded-panel bg-shell">
-          <Image src="/media/breeder-house.jpg" alt="" fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+          <Image src="/media/laying-hens.jpg" alt="" fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
         </div>
       </section>
 

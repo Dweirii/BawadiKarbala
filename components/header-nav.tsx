@@ -94,10 +94,11 @@ export function HeaderNav({
         </button>
       </div>
 
+      {/* The header's backdrop blur makes it the containing block for this fixed panel, so it needs an explicit height. */}
       <div
         id="mobile-menu"
         hidden={!open}
-        className="fixed inset-x-0 top-18 bottom-0 z-30 overflow-y-auto bg-paper lg:hidden"
+        className="fixed inset-x-0 top-18 z-30 h-[calc(100dvh-4.5rem)] overflow-y-auto bg-paper lg:hidden"
       >
         <nav className="container-site flex flex-col py-6" aria-label={labels.main}>
           {[...items, contact].map((item) => (

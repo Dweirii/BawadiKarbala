@@ -88,9 +88,10 @@
     line-height: 0.98;
     text-wrap: balance;
   }
+  /* Arabic letterforms stack dots and hamzas above and below; give them room. */
   [dir="rtl"] .display {
     letter-spacing: 0;
-    line-height: 1.25;
+    line-height: 1.4;
   }
 
   .btn {

@@ -79,7 +79,7 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
       <section className="container-site mt-20 grid gap-10 md:mt-28 lg:grid-cols-12 lg:items-center">
         <div className="relative aspect-[636/367] overflow-hidden rounded-panel bg-shell lg:col-span-6">
           <Image
-            src="/media/breeder-house.jpg"
+            src="/media/laying-hens.jpg"
             alt=""
             fill
             sizes="(min-width: 1024px) 45vw, 100vw"
